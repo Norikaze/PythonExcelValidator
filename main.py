@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import openpyxl
 import json
 
@@ -21,6 +23,12 @@ def get_excel_data():
         for i, cell in enumerate(row):
             tabela[keys[i]].append(cell.value)
     return tabela
+
+def print_excel_data():
+    data_dict = get_excel_data()
+    for value in data_dict.values():
+        for data in value:
+            print(data)
 
 
 def check_column_number():
@@ -53,40 +61,68 @@ def check_column_order():
         return True
     else:
         return False
-def check_data_types():
-    column_data_type_json = type(get_column_names())
-    column_data_type_excel = type(get_excel_data())
 
-    if column_data_type_json == column_data_type_excel:
-        return True
-    else:
-        return False
+
+def compare_data_types():
+    column_data_type_json = read_column_data_types()
+    column_data_type_excel = get_excel_data()
+    # print(column_data_type_excel.values())
+    # print(column_data_type_json.values())
+
+    for column, expected_data_type in zip(column_data_type_excel.values(), column_data_type_json.values()):
+        # print(f"printing data_excel")
+        # print(column)
+        # print(f"printing data_json")
+        # print(expected_data_type)
+        for cell_value in column:
+            if type(cell_value) == expected_data_type:
+                print("It's a match ✌")
+            else:
+                print("No match🤷‍♀️")
+
+
 def read_column_data_types():
     json_file = open("excel-definition.json", "r")
     data = json.load(json_file)
     data_types = data["column_data_types"]
     json_file.close()
+    rv = {}
     for k, v in data_types.items():
-        print(k, v)
-    return data_types
+        # print(k, v)
+        if v == "integer":
+            rv[k] = int
+        elif v == "string":
+            rv[k] = str
+        elif v == "boolean":
+            rv[k] = bool
+        elif v == "float":
+            rv[k] = float
+        elif v == "date":
+            rv[k] = datetime
+
+    return rv
+
+
 
 
 
 
 if __name__ == "__main__":
-    print("Getting column names...")
-    print(get_column_names())
-    print("Getting excel data..")
-    print(get_excel_data())
-    print("Checking column number...")
-    print(check_column_number())
-    print("Checking column names..")
-    print(check_column_names())
-    print("Checking column order...")
-    print(check_column_order())
-    print("checking data types...")
-    print(check_data_types())
-    print("Reading column data types...")
-    print(read_column_data_types())
+    # print("Getting column names...")
+    # print(get_column_names())
+    # print("Getting excel data..")
+    # print(get_excel_data())
+    # print("Checking column number...")
+    # print(check_column_number())
+    # print("Checking column names..")
+    # print(check_column_names())
+    # print("Checking column order...")
+    # print(check_column_order())
+    print("comparing data types...")
+    compare_data_types()
+    # print("Reading column data types...")
+    # print(read_column_data_types())
+    #  print_excel_data()
+
 
 
