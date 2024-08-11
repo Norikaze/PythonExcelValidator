@@ -69,17 +69,20 @@ def compare_data_types():
     # print(column_data_type_excel.values())
     # print(column_data_type_json.values())
 
-    for column, expected_data_type in zip(column_data_type_excel.values(), column_data_type_json.values()):
+    types_correct = True
+    for (column_name, column_data), expected_data_type in zip(column_data_type_excel.items(), column_data_type_json.values()):
         # print(f"printing data_excel")
         # print(column)
         # print(f"printing data_json")
         # print(expected_data_type)
-        for cell_value in column:
+        for cell_value in column_data:
             if type(cell_value) == expected_data_type:
                 print("It's a match ✌")
             else:
-                print("No match🤷‍♀️")
+                print(f"Not matching data type, expected {expected_data_type}, got value - {cell_value}, error in column - {column_name}")
+                types_correct = False
 
+    return types_correct
 
 def read_column_data_types():
     json_file = open("excel-definition.json", "r")
