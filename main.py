@@ -2,29 +2,8 @@ from datetime import datetime
 
 import openpyxl
 import json
-
-excel_file_name = r"C:\Users\admin\PycharmProjects\ExcelStart\15isInRange.xlsx"
-
-
-def get_column_names():
-    json_file = open("excel-definition.json", "r")
-    data = json.load(json_file)
-    json_file.close()
-    return data["column_names"]
-
-
-def get_excel_data(excel_file_name):
-    workbook = openpyxl.load_workbook(excel_file_name)
-    sheet = workbook.active
-    values = []
-    tabela = {}
-    for cell in sheet[1]:
-        tabela[cell.value] = []
-    keys = list(tabela.keys())
-    for row in sheet.iter_rows(min_row=2):
-        for i, cell in enumerate(row):
-            tabela[keys[i]].append(cell.value)
-    return tabela
+from data_checkers import check_column_number, check_column_names, check_column_order
+from file_access import get_column_names, get_excel_data
 
 def print_excel_data(excel_file_name):
     data_dict = get_excel_data(excel_file_name)
@@ -32,37 +11,6 @@ def print_excel_data(excel_file_name):
         for data in value:
             print(data)
 
-
-def check_column_number(excel_file_name):
-    column_number_json = len(get_column_names())
-    column_number_excel = len(get_excel_data(excel_file_name))
-
-    if column_number_json == column_number_excel:
-        print("it's even")
-        return True
-    else:
-        print("it's not even")
-        return False
-
-
-def check_column_names(excel_file_name):
-    column_names_json = set(get_column_names())
-    column_names_excel = set(get_excel_data(excel_file_name))
-
-    if column_names_json == column_names_excel:
-        return True
-    else:
-        return False
-
-
-def check_column_order(excel_file_name):
-    column_order_json = list(get_column_names())
-    column_order_excel = list(get_excel_data(excel_file_name))
-
-    if column_order_json == column_order_excel:
-        return True
-    else:
-        return False
 
 
 def compare_data_types(excel_file_name):
@@ -108,26 +56,23 @@ def read_column_data_types():
     return rv
 
 
-
-
-
-
 if __name__ == "__main__":
-    # print("Getting column names...")
-    # print(get_column_names())
-    # print("Getting excel data..")
-    # print(get_excel_data(excel_file_name))
-    # print("Checking column number...")
-    # print(check_column_number())
-    # print("Checking column names..")
-    # print(check_column_names())
-    # print("Checking column order...")
-    # print(check_column_order())
+    excel_file_name = r"C:\Users\admin\PycharmProjects\ExcelStart\15isInRange.xlsx"
+    print("Getting column names...")
+    print(get_column_names())
+    print("Getting excel data..")
+    print(get_excel_data(excel_file_name))
+    print("Checking column number...")
+    print(check_column_number(excel_file_name))
+    print("Checking column names..")
+    print(check_column_names(excel_file_name))
+    print("Checking column order...")
+    print(check_column_order(excel_file_name))
     print("comparing data types...")
     compare_data_types("15isInRange.xlsx")
-    # print("Reading column data types...")
-    # print(read_column_data_types())
-    #  print_excel_data()
+    print("Reading column data types...")
+    print(read_column_data_types())
+    print_excel_data(excel_file_name)
 
 
 
